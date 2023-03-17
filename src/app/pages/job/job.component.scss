@@ -1,0 +1,220 @@
+@import "../../../vars.scss";
+
+main {
+  margin-top: 2rem;
+  min-height: 100vh;
+  padding-bottom: 8rem;
+}
+
+.back-btn {
+  cursor: pointer;
+  display: flex;
+  gap: 1rem;
+  font-size: 20px;
+  color: $sub-text;
+}
+
+.job-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 6rem;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h1 {
+    font-size: 40px;
+    color: $accent-text;
+  }
+
+  p {
+    font-size: 20px;
+    line-height: 24px;
+  }
+}
+
+.field {
+  display: flex;
+  gap: 1rem;
+
+  div {
+    background-color: $pale_turquoise;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 50px;
+  }
+}
+
+.job-picture {
+  img {
+    width: 280px;
+    height: 240px;
+  }
+}
+
+.skills {
+  margin-top: 1rem;
+  color: $accent-text;
+  font-size: 20px;
+}
+
+.skill-list {
+  list-style-position: inside;
+  font-size: 20px;
+  width: 600px;
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+
+  li {
+    margin: 5px 0;
+  }
+}
+
+.main-block {
+  margin-top: 3rem;
+  border-top: 1px solid $main-text;
+  padding-top: 3rem;
+  display: flex;
+  gap: 3rem;
+}
+
+.filter__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  h3 {
+    font-size: 25px;
+  }
+}
+
+.filter__group {
+  margin-top: 1rem;
+  position: relative;
+  width: 260px;
+  height: 60px;
+  transition: height 0.4s ease;
+
+  .filter__group__name {
+    cursor: pointer;
+    background-color: $box-bg;
+    width: 100%;
+    font-size: 20px;
+    border: 1px solid #f5f5f5;
+    padding: 1rem 1rem;
+  }
+}
+
+.filter__group::before {
+  content: "";
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  z-index: 1000;
+  width: 8px;
+  height: 8px;
+  border: 2px solid $ui-color;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(-45deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.filter__group__items {
+  width: 100%;
+  background-color: $box-bg;
+  border: 1px solid #f5f5f5;
+  opacity: 0;
+  overflow-y: auto;
+
+  div {
+    padding: 1rem 1rem;
+    font-size: 18px;
+  }
+}
+
+.filter__group__items.active {
+  opacity: 1;
+  height: 270px;
+}
+
+.filter__group__items::-webkit-scrollbar {
+  width: 6px;
+}
+.filter__group__items::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 50px;
+}
+
+.filter__group.active {
+  height: 330px;
+}
+
+.filter__group.active::before {
+  transform: rotate(-225deg);
+  top: 28px;
+}
+
+.custom-checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.custom-checkbox + label {
+  display: inline-flex;
+  align-items: center;
+}
+.custom-checkbox + label::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid #adb5bd;
+  border-radius: 0.25em;
+  margin-right: 0.8rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+}
+
+.custom-checkbox:checked + label::before {
+  border-color: $ui-color;
+  background-color: $ui-color;
+  background-image: url("../../../assets/svg/checked.svg");
+}
+
+.custom-checkbox:not(:disabled):not(:checked) + label:hover::before {
+  border-color: $pale_turquoise;
+}
+
+.custom-checkbox:not(:disabled):active + label::before {
+  background-color: $pale_turquoise;
+  border-color: $pale_turquoise;
+}
+
+.custom-checkbox:disabled + label::before {
+  background-color: $box-bg;
+}
+
+.list {
+  flex-grow: 1;
+  h2 {
+    font-size: 35px;
+  }
+}
+
+.list__items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  gap: 2rem;
+  width: 100%;
+}

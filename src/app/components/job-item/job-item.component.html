@@ -1,0 +1,15 @@
+<div class="jobs-item">
+  <div class="item-head" (click)="openInfo()">
+    <h3>{{ job.name }}</h3>
+  </div>
+  <div *ngIf="isOpen" class="item-content">
+    <div class="description">
+      {{ job.description }}
+    </div>
+    <p>Навыки, которые вы получите:</p>
+    <ul class="skill-list">
+      <li *ngFor="let skill of job.skills">{{ skill }}</li>
+    </ul>
+    <button (click)="goToJob()" class="more-info-btn">Подробнее</button>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+<main>
+  <div (click)="goBack()" class="back-btn">
+    <img src="assets/svg/backArrow.svg" alt="" />
+    <div>назад</div>
+  </div>
+  <div class="job-info">
+    <div class="left-side">
+      <div class="field">
+        <div *ngFor="let field of job.fields">{{ field }}</div>
+      </div>
+      <h1>{{ job.name }}</h1>
+      <p>
+        {{ job.description }}
+      </p>
+      <p class="skills">Навыки, которые вы получите:</p>
+      <ul class="skill-list">
+        <li *ngFor="let skill of job.skills">{{ skill }}</li>
+      </ul>
+    </div>
+    <div class="job-picture">
+      <img src="assets/example.jpg" alt="картинка" />
+    </div>
+  </div>
+  <div class="main-block">
+    <div class="filter">
+      <div class="filter__title">
+        <img src="assets/svg/filter.svg" alt="" />
+        <h3>Фильтр</h3>
+      </div>
+      <div class="filter__group" [ngClass]="{ active: isOpenDirections }">
+        <div (click)="openDirections()" class="filter__group__name">
+          Факультеты
+        </div>
+        <div
+          class="filter__group__items"
+          [ngClass]="{ active: isOpenDirections }"
+        >
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d1"
+              name="directions"
+              value="1"
+            />
+            <label for="d1">C++</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d2"
+              name="directions"
+              value="2"
+            />
+            <label for="d2">Python</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d3"
+              name="directions"
+              value="3"
+            />
+            <label for="d3">Java</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d4"
+              name="directions"
+              value="4"
+            />
+            <label for="d4">Базы данных</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d5"
+              name="directions"
+              value="5"
+            />
+            <label for="d5">Создание сайтов</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d6"
+              name="directions"
+              value="6"
+            />
+            <label for="d6">Философия</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d7"
+              name="directions"
+              value="7"
+            />
+            <label for="d7">Математика</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d8"
+              name="directions"
+              value="8"
+            />
+            <label for="d8">Абаба</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              id="d9"
+              name="directions"
+              value="9"
+            />
+            <label for="d9">Алолол</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="list">
+      <h2>Подходящие направления ({{ directions.length }})</h2>
+      <div class="list__items">
+        <direction-item
+          *ngFor="let dir of directions"
+          [direction]="dir"
+        ></direction-item>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,70 @@
+@import "../../../vars.scss";
+
+.jobs-item {
+  padding: 24px 20px;
+  background-color: $box-bg;
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px 0px #666666;
+}
+
+.item-content {
+  position: relative;
+}
+
+.item-head {
+  position: relative;
+  h3 {
+    font-size: 30px;
+    font-weight: 500;
+  }
+}
+
+.item-head::before {
+  content: "";
+  position: absolute;
+  right: 12px;
+  z-index: 1000;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #9e9e9e;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(-45deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.item-content {
+  padding-top: 1rem;
+
+  p {
+    margin-top: 5px;
+    color: $accent-text;
+    font-weight: 500;
+  }
+}
+
+.skill-list {
+  list-style-position: inside;
+  width: 600px;
+  margin-top: 0.3rem;
+  column-count: 2;
+
+  li {
+    margin: 5px 0;
+  }
+}
+
+.more-info-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 16px;
+  color: #9e9e9e;
+  border: 1px solid #9e9e9e;
+  background: transparent;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0.6rem;
+  border-radius: 50px;
+}

@@ -1,8 +1,10 @@
-<div class="jobs-item">
-  <div class="item-head" (click)="openInfo()">
-    <h3>{{ job.name }}</h3>
-  </div>
-  <div *ngIf="isOpen" class="item-content">
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{ job.name }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="item-content">
     <div class="description">
       {{ job.description }}
     </div>
@@ -10,6 +12,8 @@
     <ul class="skill-list">
       <li *ngFor="let skill of job.skills">{{ skill }}</li>
     </ul>
-    <button (click)="goToJob()" class="more-info-btn">Подробнее</button>
+    <button mat-stroked-button class="more-info-btn" (click)="goToJob()">
+      Подробнее
+    </button>
   </div>
-</div>
+</mat-expansion-panel>

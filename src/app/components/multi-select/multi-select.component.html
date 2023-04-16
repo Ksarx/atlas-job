@@ -1,0 +1,33 @@
+<ng-select
+  #combo
+  [multiple]="true"
+  [items]="optionItems"
+  [closeOnSelect]="false"
+  (change)="onSelectionChange($event)"
+  (blur)="onTouched()"
+  class="multi-select-filter"
+  placeholder="Навыки"
+  bindLabel="name"
+  [ngModel]="selectedValues"
+  bindValue="id"
+>
+  <ng-template ng-header-tmp let-items="items">
+    <input
+      type="checkbox"
+      [ngModel]="selectAll"
+      (change)="toggleCheckAll($event)"
+    />
+    Показать все
+  </ng-template>
+
+  <ng-template
+    ng-option-tmp
+    let-item="item"
+    let-item$="item$"
+    let-index="index"
+    class="checkbox"
+  >
+    <input id="item-{{ index }}" type="checkbox" [checked]="item$.selected" />
+    {{ item.name }}
+  </ng-template>
+</ng-select>

@@ -1,0 +1,43 @@
+<main>
+  <div (click)="goBack()" class="back-btn">
+    <img src="assets/svg/backArrow.svg" alt="" />
+    <div>назад</div>
+  </div>
+  <div class="direction-info">
+    <h1 class="title">План обучения профессии</h1>
+    <div class="code">Код направления 02.03.02</div>
+    <h1 class="direction-name">
+      Фундаментальная информатика и информационные технологии
+    </h1>
+  </div>
+  <div class="main-block">
+    <p class="description">
+      Ниже представлены дисциплины, которые будут пройдены во время обучения.
+      <br />
+      Выделенные учебные дисциплины соответвуют подготовке к профессии.
+    </p>
+    <div class="trajectory">
+      <app-donut-chart
+        [data]="data"
+        [trajectory]="trajectory"
+        (similarityOut)="receiveSimilarity($event)"
+      ></app-donut-chart>
+    </div>
+    <div class="similarity">
+      <div class="columns">
+        <p>Классификация дисциплин</p>
+        <p>Сходство с профессией</p>
+      </div>
+      <div *ngFor="let item of data; let i = index" class="discipline-field">
+        <div class="left">
+          <div
+            class="circle"
+            [ngStyle]="{ 'background-color': item.color }"
+          ></div>
+          <p>{{ item.name }}</p>
+        </div>
+        <div class="value">{{ this.similarity[i] }}%</div>
+      </div>
+    </div>
+  </div>
+</main>

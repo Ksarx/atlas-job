@@ -15,6 +15,8 @@ export class JobComponent implements OnInit {
   directions: IDirection[];
   isOpenDirections = false;
 
+  isLoadingInfo = true;
+
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -33,6 +35,7 @@ export class JobComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.jobsSerivce.getJobById(params['id']).subscribe((job: IJob) => {
         this.job = job;
+        this.isLoadingInfo = false;
       });
       this.jobsSerivce
         .getJobDirections(params['id'])

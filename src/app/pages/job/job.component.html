@@ -4,6 +4,7 @@
     <div>назад</div>
   </div>
   <div class="job-info">
+    <mat-spinner *ngIf="isLoadingInfo"></mat-spinner>
     <div class="left-side">
       <div class="field">
         <div *ngFor="let field of job.fields">{{ field }}</div>

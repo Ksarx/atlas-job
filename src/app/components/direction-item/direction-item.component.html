@@ -1,24 +1,22 @@
-<div class="direction-item">
-  <div class="item-head" (click)="openInfo()">
-    <p>{{ direction.code }}</p>
-    <h3>{{ direction.name }}</h3>
-  </div>
-  <div *ngIf="isOpen" class="item-content">
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title class="title">
+      <p>Код направления {{ direction.code }}</p>
+      <h3>{{ direction.name }}</h3>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="item-content">
     <div class="type">{{ direction.level }}</div>
     <div class="description">
       {{ direction.description }}
     </div>
-    <p>Путь обучения:</p>
-    <ul class="semester-list">
-      <li *ngFor="let sem of direction.semesters">
-        <span>{{ sem.semNumber }} семестр:</span>
-        {{ sem.disciplines.join(", ") }}
-      </li>
-    </ul>
-    <div class="socials">
-      <img src="assets/svg/vk.svg" alt="" />
-      <img src="assets/svg/telegram.svg" alt="" />
+    <div class="buttons">
+      <button mat-stroked-button class="plan" (click)="goToTrajectory()">План обучения</button>
+      <div class="socials">
+        <img src="assets/svg/vk.svg" alt="" />
+        <img src="assets/svg/telegram.svg" alt="" />
+      </div>
+      <button mat-stroked-button class="more-info-btn">Поступить</button>
     </div>
-    <button class="more-info-btn">Поступить</button>
   </div>
-</div>
+</mat-expansion-panel>

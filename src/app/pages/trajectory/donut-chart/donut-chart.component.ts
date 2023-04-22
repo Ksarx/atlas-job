@@ -91,7 +91,8 @@ export class DonutChartComponent {
       .attr('r', 120)
       .attr('fill', (d: any) => this.color(d.data.percent))
       .style('z-index', -1)
-      .style('filter', 'blur(80px)')
+      .style('filter', 'blur(100px)')
+      .style('opacity', 0.8)
       .attr('transform', (d: any) => {
         const centroid = outerArc.centroid(d);
         return `translate(${centroid[0]}, ${centroid[1]})`;

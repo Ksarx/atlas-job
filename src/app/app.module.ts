@@ -12,7 +12,6 @@ import { DirectionItemComponent } from './components/direction-item/direction-it
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MultiSelectComponent } from './components/multi-select/multi-select.component';
-import { NgOptionHighlightModule } from '@ng-select/ng-option-highlight';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { TrajectoryComponent } from './pages/trajectory/trajectory.component';

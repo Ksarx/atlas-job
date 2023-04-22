@@ -37,7 +37,6 @@ import { DonutChartComponent } from './pages/trajectory/donut-chart/donut-chart.
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
-    NgOptionHighlightModule,
     MaterialModule,
   ],
   providers: [],

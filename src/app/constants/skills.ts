@@ -1,14 +1,22 @@
 export const Skills = [
   {
-    id: 0,
+    id: 1,
     name: 'Python',
   },
   {
-    id: 1,
+    id: 2,
     name: 'Java',
   },
   {
-    id: 2,
+    id: 3,
     name: 'Базы данных',
+  },
+  {
+    id: 4,
+    name: 'Tilda',
+  },
+  {
+    id: 5,
+    name: 'Верстка',
   },
 ];

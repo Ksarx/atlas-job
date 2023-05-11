@@ -8,11 +8,11 @@
     <div class="description">
       {{ job.description }}
     </div>
-    <p>Навыки, которые вы получите:</p>
+    <p>Навыки профессии:</p>
     <ul class="skill-list">
       <li *ngFor="let skill of job.skills">{{ skill }}</li>
     </ul>
-    <button mat-stroked-button class="more-info-btn" (click)="goToJob()">
+    <button mat-button class="more-info-btn" (click)="goToJob()">
       Подробнее
     </button>
   </div>

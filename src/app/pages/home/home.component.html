@@ -42,10 +42,10 @@
             <input
               type="checkbox"
               class="custom-checkbox"
-              [id]="'option-0'"
+              [id]="'all'"
               formControlName="selectAll"
             />
-            <label [for]="'option-0'">Показать все</label>
+            <label [for]="'all'">Показать все</label>
           </div>
           <div
             formArrayName="skillOptions"
@@ -55,14 +55,21 @@
               type="checkbox"
               class="custom-checkbox"
               [id]="'option' + skillOptions[i].id"
-              [formControlName]="skillOptions[i].id"
+              [formControlName]="i"
             />
             <label [for]="'option' + skillOptions[i].id">{{
               skillOptions[i].name
             }}</label>
           </div>
-          <button>Отправить</button>
         </form>
+      </div>
+      <div class="tools">
+        <button mat-button class="submit submit__cancel" (click)="cancel()">
+          Очистить
+        </button>
+        <button mat-button class="submit submit__send" (click)="submit()">
+          Применить
+        </button>
       </div>
     </div>
     <div class="list">
@@ -77,8 +84,7 @@
               [job]="job"
             ></job-item>
             <button
-              mat-stroked-button
-              *ngIf="hasNextPage && searchField === ''"
+              *ngIf="hasNextPage && searchField === '' && !filter"
               (click)="loadMore()"
               mat-button
               class="show-more-btn"

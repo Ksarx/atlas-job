@@ -1,11 +1,39 @@
 <nav class="header container">
-  <div class="logo">
+  <div class="logo" (click)="goToHome()">
     Атлас <br />
     профессий <br />
     ОмГТУ
   </div>
   <form class="search-bar">
-    <input type="text" placeholder="Профессия, навык" name="search" />
-    <button type="submit"><img src="assets/svg/search.svg" alt="" /></button>
+    <img class="search-icon" src="assets/svg/search.svg" alt="" />
+    <input
+      autocomplete="off"
+      type="text"
+      placeholder="Профессия, направление"
+      name="search"
+      [(ngModel)]="searchText"
+      (focus)="focus = true"
+    />
+    <div (click)="clearSearch()" *ngIf="searchText !== ''" class="clear-search">
+      <img src="assets/svg/cross.svg" alt="" />
+    </div>
+    <button type="submit" class="btn-search" (click)="search()">Найти</button>
+    <ul
+      #list
+      class="search-variants"
+      *ngIf="
+        searchText !== '' &&
+        (data | filterSearch : searchText : filterMetadata)?.length != 0 &&
+        focus
+      "
+    >
+      <li
+        *ngFor="let item of data | filterSearch : searchText : filterMetadata"
+        class="variant"
+        (click)="search(item.name)"
+      >
+        {{ item.name }}
+      </li>
+    </ul>
   </form>
 </nav>

@@ -4,39 +4,48 @@
   padding: 20px 20px;
   background-color: $box-bg;
   border-radius: 20px;
-  box-shadow: 2px 2px 4px 0px #666666;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  font-size: 18px;
 
   &-header {
     height: 100%;
+    padding: 0;
 
     .title {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      p {
-        font-size: 15px;
-        color: $accent-text;
-      }
 
       h3 {
         font-size: 30px;
         font-weight: 500;
       }
+
+      .profile {
+        margin-top: 5px;
+        font-size: 18px;
+        border-radius: 10px;
+        padding: 5px 10px;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 123, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0) 100%
+        );
+      }
     }
+  }
+
+  .disable_ripple:hover {
+    background: none;
   }
 }
 
 .item-content {
   position: relative;
-  padding-top: 1rem;
-  font-size: 20px;
+  padding-top: 10px;
 
   .type {
-    margin-bottom: 1rem;
-  }
-
-  .description {
-    text-indent: 1.2rem;
+    margin-bottom: 10px;
   }
 
   .buttons {
@@ -58,11 +67,14 @@
   .socials {
     position: absolute;
     display: flex;
+    align-items: center;
     gap: 1rem;
-    right: 7rem;
-    bottom: 0.55rem;
+    right: 8rem;
+    bottom: 0.22rem;
 
     img {
+      height: 30px;
+      width: 30px;
       cursor: pointer;
     }
   }
@@ -73,10 +85,10 @@
     bottom: 0;
     font-size: 16px;
     color: white;
-    background-color: #06c895;
+    background-color: #007bff;
     cursor: pointer;
     z-index: 100;
-    padding: 0.6rem;
+    padding: 13px 15px;
     border-radius: 50px;
   }
 }

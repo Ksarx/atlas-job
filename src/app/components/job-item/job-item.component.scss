@@ -4,18 +4,26 @@
   padding: 24px 20px;
   background-color: $box-bg;
   border-radius: 20px;
-  box-shadow: 2px 2px 4px 0px #666666;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  font-size: 18px;
+
   &-header {
+    padding: 0;
     font-size: 30px;
     font-weight: 500;
+  }
+
+  .disable_ripple:hover {
+    background: none;
   }
 }
 
 .item-content {
-  padding-top: 1rem;
+  padding-top: 14px;
   position: relative;
   p {
-    margin-top: 5px;
+    margin-top: 7px;
+    font-size: 16px;
     color: $accent-text;
     font-weight: 500;
   }
@@ -23,13 +31,18 @@
 
 .skill-list {
   list-style-position: inside;
-  width: 600px;
-  margin-top: 0.3rem;
-  column-count: 2;
+  list-style: none;
+  width: 500px;
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  font-size: 16px;
+}
 
-  li {
-    margin: 5px 0;
-  }
+.skill-list li::before {
+  content: "•";
+  font-size: 15pt;
+  padding-right: 10px;
 }
 
 .more-info-btn {

@@ -3,263 +3,122 @@
     <h1>Получи профессию вместе с <span>ОмГТУ</span></h1>
     <p>Помогаем найти себя и качественно обучаем востребованным профессиям</p>
   </div>
-  <div class="field">
+  <div class="field" *ngIf="searchField == ''">
     <p>Выбери <br />интересную для себя сферу деятельности</p>
     <div class="line"></div>
-    <div class="field-group">
-      <div class="field-item">
-        <input id="r1" type="radio" name="radio" value="1" checked />
-        <label for="r1">Все профессии</label>
+    <form [formGroup]="fieldForm" class="field-group">
+      <div *ngFor="let field of fields" class="field-item">
+        <input
+          [id]="'field' + field.id"
+          type="radio"
+          [value]="field.value"
+          formControlName="field"
+        />
+        <label [for]="'field' + field.id">{{ field.value }}</label>
       </div>
-      <div class="field-item">
-        <input id="r2" type="radio" name="radio" value="2" />
-        <label for="r2">Дизайн</label>
-      </div>
-      <div class="field-item">
-        <input id="r3" type="radio" name="radio" value="3" />
-        <label for="r3">Программирование</label>
-      </div>
-      <div class="field-item">
-        <input id="r4" type="radio" name="radio" value="4" />
-        <label for="r4">Инженерия</label>
-      </div>
-      <div class="field-item">
-        <input id="r5" type="radio" name="radio" value="5" />
-        <label for="r5">Маркетинг</label>
-      </div>
-      <div class="field-item">
-        <input id="r6" type="radio" name="radio" value="6" />
-        <label for="r6">Психология</label>
-      </div>
-      <div class="field-item">
-        <input id="r7" type="radio" name="radio" value="7" />
-        <label for="r7">Архитектура</label>
-      </div>
-      <div class="field-item">
-        <input id="r8" type="radio" name="radio" value="8" />
-        <label for="r8">Управление</label>
-      </div>
-      <div class="field-item">
-        <input id="r9" type="radio" name="radio" value="9" />
-        <label for="r9">Иностранные языки</label>
-      </div>
-    </div>
+    </form>
   </div>
   <div class="main-block">
     <div class="filter">
       <div class="filter__title">
+        <h3>Фильтры</h3>
         <img src="assets/svg/filter.svg" alt="" />
-        <h3>Фильтр</h3>
       </div>
-      <div class="form-group">
-        <!-- <app-multi-select
-          [optionItems]="cities"
-          formControlName="selectedCitiesIds"
-        >
-        </app-multi-select> -->
-      </div>
-      <div class="filter__group" [ngClass]="{ active: isOpenSkills }">
-        <div (click)="openSkills()" class="filter__group__name">Навыки</div>
-        <div class="filter__group__items" [ngClass]="{ active: isOpenSkills }">
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c1"
-              name="skills"
-              value="1"
-            />
-            <label for="c1">C++</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c2"
-              name="skills"
-              value="2"
-            />
-            <label for="c2">Python</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c3"
-              name="skills"
-              value="3"
-            />
-            <label for="c3">Java</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c4"
-              name="skills"
-              value="c4"
-            />
-            <label for="c4">Базы данных</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c5"
-              name="skills"
-              value="c5"
-            />
-            <label for="c5">Создание сайтов</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c6"
-              name="skills"
-              value="6"
-            />
-            <label for="c6">Философия</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c7"
-              name="skills"
-              value="7"
-            />
-            <label for="c7">Математика</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c8"
-              name="skills"
-              value="8"
-            />
-            <label for="c8">Абаба</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="c9"
-              name="skills"
-              value="9"
-            />
-            <label for="c9">Алолол</label>
-          </div>
-        </div>
-      </div>
-      <div class="filter__group" [ngClass]="{ active: isOpenDirections }">
-        <div (click)="openDirections()" class="filter__group__name">
-          Факультеты
-        </div>
+      <div class="dropdown__block">
         <div
-          class="filter__group__items"
-          [ngClass]="{ active: isOpenDirections }"
+          (click)="showDropdown = !showDropdown"
+          class="dropdown__name"
+          [ngClass]="{ active: showDropdown }"
         >
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d1"
-              name="directions"
-              value="1"
-            />
-            <label for="d1">C++</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d2"
-              name="directions"
-              value="2"
-            />
-            <label for="d2">Python</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d3"
-              name="directions"
-              value="3"
-            />
-            <label for="d3">Java</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d4"
-              name="directions"
-              value="4"
-            />
-            <label for="d4">Базы данных</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d5"
-              name="directions"
-              value="5"
-            />
-            <label for="d5">Создание сайтов</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d6"
-              name="directions"
-              value="6"
-            />
-            <label for="d6">Философия</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d7"
-              name="directions"
-              value="7"
-            />
-            <label for="d7">Математика</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d8"
-              name="directions"
-              value="8"
-            />
-            <label for="d8">Абаба</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d9"
-              name="directions"
-              value="9"
-            />
-            <label for="d9">Алолол</label>
-          </div>
+          Навыки
         </div>
+        <form
+          class="dropdown__container"
+          *ngIf="showDropdown"
+          [formGroup]="skillForm"
+          (ngSubmit)="submit()"
+        >
+          <div class="show-all">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [id]="'option-0'"
+              formControlName="selectAll"
+            />
+            <label [for]="'option-0'">Показать все</label>
+          </div>
+          <div
+            formArrayName="skillOptions"
+            *ngFor="let option of getControls(); let i = index"
+          >
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [id]="'option' + skillOptions[i].id"
+              [formControlName]="skillOptions[i].id"
+            />
+            <label [for]="'option' + skillOptions[i].id">{{
+              skillOptions[i].name
+            }}</label>
+          </div>
+          <button>Отправить</button>
+        </form>
       </div>
     </div>
     <div class="list">
-      <h2>Все профессии ({{ jobs.length }})</h2>
-      <div class="list__items">
-        <mat-spinner *ngIf="isLoading"></mat-spinner>
-        <job-item *ngFor="let job of jobs" [job]="job"></job-item>
-      </div>
+      <ng-container *ngIf="!isLoading; else loading">
+        <ng-container *ngIf="field && searchField === ''; else search">
+          <h2>{{ field }} ({{ totalDocs }})</h2>
+          <div class="list__items">
+            <job-item
+              *ngFor="
+                let job of jobs | filterSearch : searchField : filterMetadata
+              "
+              [job]="job"
+            ></job-item>
+            <button
+              mat-stroked-button
+              *ngIf="hasNextPage && searchField === ''"
+              (click)="loadMore()"
+              mat-button
+              class="show-more-btn"
+            >
+              Показать еще {{ totalDocs - jobs.length }}
+            </button>
+            <p
+              *ngIf="
+                (searchField !== '' && filterMetadata.count === 0) ||
+                totalDocs === 0
+              "
+            >
+              Ничего не найдено
+            </p>
+            <mat-spinner *ngIf="isLoadingMore"></mat-spinner>
+          </div>
+        </ng-container>
+        <ng-template #search
+          ><h2>Поиск по запросу "{{ searchField }}"</h2>
+          <div class="list__items">
+            <job-item
+              *ngFor="
+                let job of allJobs | filterSearch : searchField : filterMetadata
+              "
+              [job]="job"
+            ></job-item>
+            <p
+              *ngIf="
+                (searchField !== '' && filterMetadata.count === 0) ||
+                totalDocs === 0
+              "
+            >
+              Ничего не найдено
+            </p>
+          </div>
+        </ng-template>
+      </ng-container>
+      <ng-template #loading>
+        <mat-spinner></mat-spinner>
+      </ng-template>
     </div>
   </div>
 </main>

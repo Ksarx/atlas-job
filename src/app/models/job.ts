@@ -3,5 +3,5 @@ export interface IJob {
   name: string;
   description: string;
   skills: string[];
-  fields: string[];
+  field: string;
 }

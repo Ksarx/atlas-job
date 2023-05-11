@@ -4,29 +4,34 @@
     <div>назад</div>
   </div>
   <div class="job-info">
-    <mat-spinner *ngIf="isLoadingInfo"></mat-spinner>
-    <div class="left-side">
-      <div class="field">
-        <div *ngFor="let field of job.fields">{{ field }}</div>
+    <ng-container *ngIf="!isLoadingJobInfo; else loadingJobInfo">
+      <div class="left-side">
+        <div class="field">
+          <div>{{ job.field }}</div>
+        </div>
+        <h1>{{ job.name }}</h1>
+        <p>
+          {{ job.description }}
+        </p>
+        <p class="skills">Навыки, которые вы получите:</p>
+        <ul class="skill-list">
+          <li *ngFor="let skill of job.skills">{{ skill }}</li>
+        </ul>
       </div>
-      <h1>{{ job.name }}</h1>
-      <p>
-        {{ job.description }}
-      </p>
-      <p class="skills">Навыки, которые вы получите:</p>
-      <ul class="skill-list">
-        <li *ngFor="let skill of job.skills">{{ skill }}</li>
-      </ul>
-    </div>
-    <div class="job-picture">
-      <img src="assets/example.jpg" alt="картинка" />
-    </div>
+      <div class="job-background">
+        <img src="assets/job-background.png" alt="" />
+      </div>
+      <a class="job-hhru"> Вакансии hh.ru </a>
+    </ng-container>
+    <ng-template #loadingJobInfo>
+      <mat-spinner></mat-spinner>
+    </ng-template>
   </div>
   <div class="main-block">
     <div class="filter">
       <div class="filter__title">
-        <img src="assets/svg/filter.svg" alt="" />
         <h3>Фильтр</h3>
+        <img src="assets/svg/filter.svg" alt="" />
       </div>
       <div class="filter__group" [ngClass]="{ active: isOpenDirections }">
         <div (click)="openDirections()" class="filter__group__name">
@@ -130,13 +135,39 @@
       </div>
     </div>
     <div class="list">
-      <h2>Подходящие направления ({{ directions.length }})</h2>
-      <div class="list__items">
-        <direction-item
-          *ngFor="let dir of directions"
-          [direction]="dir"
-        ></direction-item>
-      </div>
+      <ng-container *ngIf="!isLoadingDirs; else loading">
+        <h2 *ngIf="searchField === ''; else search">
+          Направления ОмГТУ ({{ totalDocs }})
+        </h2>
+        <ng-template #search
+          ><h2>Поиск по запросу "{{ searchField }}"</h2></ng-template
+        >
+        <div class="list__items">
+          <direction-item
+            *ngFor="
+              let dir of directions
+                | filterSearch : searchField : filterMetadata
+            "
+            [direction]="dir"
+          ></direction-item>
+          <button
+            mat-stroked-button
+            *ngIf="hasNextPage && searchField === ''"
+            (click)="loadMore()"
+            mat-button
+            class="show-more-btn"
+          >
+            Показать еще {{ totalDocs - directions.length }}
+          </button>
+          <p *ngIf="searchField !== '' && filterMetadata.count === 0">
+            По вашему запросу ничего не найдено
+          </p>
+          <mat-spinner *ngIf="isLoadingMore"></mat-spinner>
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        <mat-spinner></mat-spinner>
+      </ng-template>
     </div>
   </div>
 </main>

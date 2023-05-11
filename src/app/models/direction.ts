@@ -3,10 +3,8 @@ export interface IDirection {
   code: string;
   name: string;
   level: string;
+  faculty: string;
+  profile: string;
   description: string;
   idJobs: string[];
-  semesters: {
-    semNumber: number;
-    disciplines: string[];
-  }[];
 }

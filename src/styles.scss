@@ -62,7 +62,7 @@ $atlas-job-theme: mat.define-light-theme(
 
 .chart-disciplines {
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
   color: #9e9e9e;
 }
 
@@ -170,4 +170,8 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+div.mat-expansion-panel-body {
+  padding: 0;
 }

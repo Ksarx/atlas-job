@@ -6,6 +6,7 @@ import {
   FormControl,
   FormGroup,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Fields } from 'src/app/constants/fields';
 import { Skills } from 'src/app/constants/skills';
@@ -46,13 +47,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoadingMore = false;
 
   showDropdown = false;
+  filter = false;
   skillForm: FormGroup;
   skillOptions = Skills;
 
   constructor(
     private jobsService: JobService,
     private filterService: FilterService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     const formControls = this.skillOptions.map(
       (control) => new FormControl(false)
@@ -177,17 +180,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    this.filter = true;
     const selectedPreferences = this.skillForm.value.skillOptions
       .map((checked: any, index: any) =>
         checked ? this.skillOptions[index].id : null
       )
       .filter((value: any) => value !== null);
-    let filter = this.skillOptions.filter((x) => x.id in selectedPreferences);
-    this.jobs = this.filterService.setFilters(
-      filter.map((el) => {
-        return el.name;
-      }),
-      this.allJobs
+    let filteredSkills = this.skillOptions.filter((skill) =>
+      selectedPreferences.includes(skill.id)
     );
+
+    let newJobs: IJob[] = [];
+    this.allJobs.forEach((job: IJob) => {
+      if (filteredSkills.every((elem) => job.skills.includes(elem.name))) {
+        newJobs.push(job);
+      }
+    });
+    this.jobs = newJobs;
+  }
+
+  cancel() {
+    this.filter = false;
+    window.location.reload();
   }
 }

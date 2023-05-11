@@ -214,9 +214,11 @@
 }
 
 .show-more-btn {
+  border: 1px solid black;
   margin-top: 1rem;
   width: fit-content;
   font-size: 16px;
+  font-weight: 500;
   font-family: "Montserrat", sans-serif;
   background-color: #ffffff;
   cursor: pointer;
@@ -235,4 +237,28 @@
   width: 100%;
   border-bottom: 1px solid #f5f5f5;
   padding-bottom: 13px;
+}
+
+.tools {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit {
+  border-radius: 50px;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+
+  &__cancel {
+    border: 1px solid black;
+  }
+  &__send {
+    background-color: #007bff;
+    color: white !important;
+  }
 }

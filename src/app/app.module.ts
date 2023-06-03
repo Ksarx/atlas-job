@@ -16,7 +16,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { TrajectoryComponent } from './pages/trajectory/trajectory.component';
 import { DonutChartComponent } from './pages/trajectory/donut-chart/donut-chart.component';
-import { FilterSearchPipe } from './pipes/filter-search.pipe';
 import { ScrollTopComponent } from './components/scroll-top/scroll-top.component';
 
 @NgModule({
@@ -30,7 +29,6 @@ import { ScrollTopComponent } from './components/scroll-top/scroll-top.component
     MultiSelectComponent,
     TrajectoryComponent,
     DonutChartComponent,
-    FilterSearchPipe,
     ScrollTopComponent,
   ],
   imports: [

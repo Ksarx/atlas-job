@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -12,27 +12,44 @@ export class JobService {
   constructor(private http: HttpClient) {}
 
   getJobs(
-    field = 'Все профессии',
     page: number,
-    limit: number
+    limit: number,
+    field?: string,
+    skills?: string,
+    search?: string
   ): Observable<any> {
-    return this.http.get<IJob[]>(
-      environment.apiUrl + `/jobs?page=${page}&limit=${limit}&field=${field}`
-    );
+    let params = new HttpParams().set('page', page).set('limit', limit);
+
+    if (field && field !== 'Все профессии') {
+      params = params.set('field', field);
+    }
+    if (skills) {
+      params = params.set('skills', skills);
+    }
+    if (search) {
+      params = params.set('search', search);
+    }
+    return this.http.get<any>(`${environment.apiUrl}/jobs`, { params });
   }
 
-  getAllJobs(): Observable<IJob[]> {
-    return this.http.get<IJob[]>(environment.apiUrl + '/jobs/all');
+  getJobSkills(): Observable<any> {
+    return this.http.get<any>(environment.apiUrl + '/jobs/skills/');
   }
 
-  getJobById(id: string): Observable<IJob> {
-    return this.http.get<IJob>(environment.apiUrl + '/jobs/' + id);
+  getJobFields(): Observable<any> {
+    return this.http.get<any>(environment.apiUrl + '/jobs/fields/');
   }
 
+  getJobById(id: number): Observable<any> {
+    return this.http.get<any>(environment.apiUrl + '/jobs/' + id);
+  }
 
-  // getJobDirections(id: string): Observable<IDirection[]> {
-  //   return this.http.get<IDirection[]>(
-  //     environment.apiUrl + '/jobs/' + id + '/directions'
-  //   );
-  // }
+  getJobNames(search_query?: string): Observable<any> {
+    let params = new HttpParams();
+
+    if (search_query) {
+      params = params.set('search_query', search_query);
+    }
+    return this.http.get<any>(environment.apiUrl + '/jobs/search', { params });
+  }
 }

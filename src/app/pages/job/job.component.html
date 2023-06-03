@@ -4,7 +4,7 @@
     <div>назад</div>
   </div>
   <div class="job-info">
-    <ng-container *ngIf="!isLoadingJobInfo; else loadingJobInfo">
+    <ng-container *ngIf="!isJobLoading; else loadingJobInfo">
       <div class="left-side">
         <div class="field">
           <div>{{ job.field }}</div>
@@ -30,139 +30,74 @@
   <div class="main-block">
     <div class="filter">
       <div class="filter__title">
-        <h3>Фильтр</h3>
+        <h3>Фильтры</h3>
         <img src="assets/svg/filter.svg" alt="" />
       </div>
-      <div class="filter__group" [ngClass]="{ active: isOpenDirections }">
-        <div (click)="openDirections()" class="filter__group__name">
+      <div class="dropdown__block">
+        <div
+          (click)="facultiesDropdown = !facultiesDropdown"
+          class="dropdown__name"
+          [ngClass]="{ active: facultiesDropdown }"
+        >
           Факультеты
         </div>
-        <div
-          class="filter__group__items"
-          [ngClass]="{ active: isOpenDirections }"
+        <form
+          class="dropdown__container"
+          *ngIf="facultiesDropdown"
+          [formGroup]="facultiesGroup"
         >
-          <div>
+          <div class="show-all">
             <input
               type="checkbox"
               class="custom-checkbox"
-              id="d1"
-              name="directions"
-              value="1"
+              [id]="'allFaculties'"
+              formControlName="selectAllFaculties"
             />
-            <label for="d1">C++</label>
+            <label [for]="'allFaculties'">Показать все</label>
           </div>
-          <div>
+          <div
+            *ngFor="let faculty of faculties; let i = index"
+            formArrayName="faculties"
+          >
             <input
               type="checkbox"
               class="custom-checkbox"
-              id="d2"
-              name="directions"
-              value="2"
+              [id]="'faculty' + i"
+              [formControlName]="i"
+              [value]="faculty"
             />
-            <label for="d2">Python</label>
+            <label [for]="'faculty' + i">{{ faculty }}</label>
           </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d3"
-              name="directions"
-              value="3"
-            />
-            <label for="d3">Java</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d4"
-              name="directions"
-              value="4"
-            />
-            <label for="d4">Базы данных</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d5"
-              name="directions"
-              value="5"
-            />
-            <label for="d5">Создание сайтов</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d6"
-              name="directions"
-              value="6"
-            />
-            <label for="d6">Философия</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d7"
-              name="directions"
-              value="7"
-            />
-            <label for="d7">Математика</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d8"
-              name="directions"
-              value="8"
-            />
-            <label for="d8">Абаба</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              class="custom-checkbox"
-              id="d9"
-              name="directions"
-              value="9"
-            />
-            <label for="d9">Алолол</label>
-          </div>
-        </div>
+        </form>
+      </div>
+      <div class="tools">
+        <button mat-button class="submit submit__cancel" (click)="cancel()">
+          Очистить
+        </button>
+        <button mat-button class="submit submit__send" (click)="submit()">
+          Применить
+        </button>
       </div>
     </div>
     <div class="list">
-      <ng-container *ngIf="!isLoadingDirs; else loading">
-        <h2 *ngIf="searchField === ''; else search">
-          Направления ОмГТУ ({{ totalDocs }})
-        </h2>
-        <ng-template #search
-          ><h2>Поиск по запросу "{{ searchField }}"</h2></ng-template
-        >
+      <ng-container *ngIf="!isDirectionsLoading; else loading">
+        <h2>Направления ОмГТУ ({{ totalDocs }})</h2>
         <div class="list__items">
           <direction-item
-            *ngFor="
-              let dir of directions
-                | filterSearch : searchField : filterMetadata
-            "
+            *ngFor="let dir of directions"
             [direction]="dir"
           ></direction-item>
           <button
             mat-stroked-button
-            *ngIf="hasNextPage && searchField === ''"
-            (click)="loadMore()"
+            *ngIf="hasNextPage"
+            (click)="loadMoreDirections()"
             mat-button
             class="show-more-btn"
           >
             Показать еще {{ totalDocs - directions.length }}
           </button>
-          <p *ngIf="searchField !== '' && filterMetadata.count === 0">
-            По вашему запросу ничего не найдено
-          </p>
-          <mat-spinner *ngIf="isLoadingMore"></mat-spinner>
+          <p *ngIf="totalDocs === 0">Ничего не найдено</p>
+          <mat-spinner *ngIf="isMoreDirectionsLoading"></mat-spinner>
         </div>
       </ng-container>
       <ng-template #loading>

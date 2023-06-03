@@ -12,6 +12,7 @@
       placeholder="Профессия, направление"
       name="search"
       [(ngModel)]="searchText"
+      (ngModelChange)="searchTextChange()"
       (focus)="focus = true"
     />
     <div (click)="clearSearch()" *ngIf="searchText !== ''" class="clear-search">
@@ -21,18 +22,10 @@
     <ul
       #list
       class="search-variants"
-      *ngIf="
-        searchText !== '' &&
-        (data | filterSearch : searchText : filterMetadata)?.length != 0 &&
-        focus
-      "
+      *ngIf="searchText !== '' && data?.length != 0 && focus"
     >
-      <li
-        *ngFor="let item of data | filterSearch : searchText : filterMetadata"
-        class="variant"
-        (click)="search(item.name)"
-      >
-        {{ item.name }}
+      <li *ngFor="let item of data" class="variant" (click)="search(item)">
+        {{ item }}
       </li>
     </ul>
   </form>

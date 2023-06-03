@@ -3,18 +3,18 @@
     <h1>Получи профессию вместе с <span>ОмГТУ</span></h1>
     <p>Помогаем найти себя и качественно обучаем востребованным профессиям</p>
   </div>
-  <div class="field" *ngIf="searchField == ''">
+  <div class="field">
     <p>Выбери <br />интересную для себя сферу деятельности</p>
     <div class="line"></div>
-    <form [formGroup]="fieldForm" class="field-group">
-      <div *ngFor="let field of fields" class="field-item">
+    <form [formGroup]="fieldsGroup" class="field-group">
+      <div *ngFor="let field of fields; let i = index" class="field-item">
         <input
-          [id]="'field' + field.id"
+          [id]="'field' + i"
           type="radio"
-          [value]="field.value"
+          [value]="field"
           formControlName="field"
         />
-        <label [for]="'field' + field.id">{{ field.value }}</label>
+        <label [for]="'field' + i">{{ field }}</label>
       </div>
     </form>
   </div>
@@ -26,40 +26,38 @@
       </div>
       <div class="dropdown__block">
         <div
-          (click)="showDropdown = !showDropdown"
+          (click)="skillsDropdown = !skillsDropdown"
           class="dropdown__name"
-          [ngClass]="{ active: showDropdown }"
+          [ngClass]="{ active: skillsDropdown }"
         >
           Навыки
         </div>
         <form
           class="dropdown__container"
-          *ngIf="showDropdown"
-          [formGroup]="skillForm"
-          (ngSubmit)="submit()"
+          *ngIf="skillsDropdown"
+          [formGroup]="skillsGroup"
         >
           <div class="show-all">
             <input
               type="checkbox"
               class="custom-checkbox"
-              [id]="'all'"
-              formControlName="selectAll"
+              [id]="'allSkills'"
+              formControlName="selectAllSkills"
             />
-            <label [for]="'all'">Показать все</label>
+            <label [for]="'allSkills'">Показать все</label>
           </div>
           <div
-            formArrayName="skillOptions"
-            *ngFor="let option of getControls(); let i = index"
+            *ngFor="let skill of skills; let i = index"
+            formArrayName="skills"
           >
             <input
               type="checkbox"
               class="custom-checkbox"
-              [id]="'option' + skillOptions[i].id"
+              [id]="'skill' + i"
               [formControlName]="i"
+              [value]="skill"
             />
-            <label [for]="'option' + skillOptions[i].id">{{
-              skillOptions[i].name
-            }}</label>
+            <label [for]="'skill' + i">{{ skill }}</label>
           </div>
         </form>
       </div>
@@ -73,54 +71,23 @@
       </div>
     </div>
     <div class="list">
-      <ng-container *ngIf="!isLoading; else loading">
-        <ng-container *ngIf="field && searchField === ''; else search">
+      <ng-container *ngIf="!isJobsLoading; else loading">
+        <ng-container>
           <h2>{{ field }} ({{ totalDocs }})</h2>
           <div class="list__items">
-            <job-item
-              *ngFor="
-                let job of jobs | filterSearch : searchField : filterMetadata
-              "
-              [job]="job"
-            ></job-item>
+            <job-item *ngFor="let job of jobs" [job]="job"></job-item>
             <button
-              *ngIf="hasNextPage && searchField === '' && !filter"
-              (click)="loadMore()"
+              *ngIf="hasNextPage"
+              (click)="loadMoreJobs()"
               mat-button
               class="show-more-btn"
             >
               Показать еще {{ totalDocs - jobs.length }}
             </button>
-            <p
-              *ngIf="
-                (searchField !== '' && filterMetadata.count === 0) ||
-                totalDocs === 0
-              "
-            >
-              Ничего не найдено
-            </p>
-            <mat-spinner *ngIf="isLoadingMore"></mat-spinner>
+            <p *ngIf="totalDocs === 0">Ничего не найдено</p>
+            <mat-spinner *ngIf="isLoadingMoreJobs"></mat-spinner>
           </div>
         </ng-container>
-        <ng-template #search
-          ><h2>Поиск по запросу "{{ searchField }}"</h2>
-          <div class="list__items">
-            <job-item
-              *ngFor="
-                let job of allJobs | filterSearch : searchField : filterMetadata
-              "
-              [job]="job"
-            ></job-item>
-            <p
-              *ngIf="
-                (searchField !== '' && filterMetadata.count === 0) ||
-                totalDocs === 0
-              "
-            >
-              Ничего не найдено
-            </p>
-          </div>
-        </ng-template>
       </ng-container>
       <ng-template #loading>
         <mat-spinner></mat-spinner>

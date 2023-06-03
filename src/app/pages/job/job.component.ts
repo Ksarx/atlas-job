@@ -6,7 +6,8 @@ import { IDirection } from 'src/app/models/direction';
 import { DirectionService } from 'src/app/services/direction.service';
 import { Subscription } from 'rxjs';
 import { JobService } from 'src/app/services/job.service';
-import { FilterService } from 'src/app/services/filter.service';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { SearchService } from 'src/app/services/search.service';
 
 @Component({
   selector: 'app-job',
@@ -15,10 +16,9 @@ import { FilterService } from 'src/app/services/filter.service';
 })
 export class JobComponent implements OnInit, OnDestroy {
   job: IJob;
-  directions: IDirection[];
-  isOpenDirections = false;
+  jobId: number;
 
-  subscription = new Subscription();
+  directions: IDirection[];
 
   currentPage = 1;
   limit = 5;
@@ -26,18 +26,28 @@ export class JobComponent implements OnInit, OnDestroy {
   totalPages = 0;
 
   searchField = '';
-  filterMetadata = { count: 0 };
 
-  isLoadingJobInfo = false;
-  isLoadingDirs = false;
-  isLoadingMore = false;
+  isJobLoading = true;
+  isDirectionsLoading = true;
+  isMoreDirectionsLoading = false;
+
+  subscription = new Subscription();
+
+  faculties: any[] = [];
+  facultiesGroup: FormGroup;
+  selectAllFaculties = true;
+  facultiesQuery = '';
+  facultiesDropdown = false;
+
+  search = '';
 
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private directionsSerivce: DirectionService,
+    private directionsService: DirectionService,
     private jobsService: JobService,
-    private filterService: FilterService
+    private formBuilder: FormBuilder,
+    private searchService: SearchService
   ) {}
 
   get hasNextPage(): boolean {
@@ -45,65 +55,107 @@ export class JobComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.filterService.changeSearch('');
     this.location.back();
   }
 
-  openDirections() {
-    this.isOpenDirections = !this.isOpenDirections;
-  }
-
   ngOnInit(): void {
-    this.isLoadingJobInfo = true;
-    this.isLoadingDirs = true;
-    this.filterService.changeSearch('');
-
     this.route.params.subscribe((params: Params) => {
-      this.subscription.add(
-        this.jobsService.getJobById(params['id']).subscribe((job: IJob) => {
-          this.job = job;
-          this.isLoadingJobInfo = false;
-        })
-      );
-      this.subscription.add(
-        this.directionsSerivce
-          .getJobDirections(params['id'], this.currentPage, this.limit)
-          .subscribe((res) => {
-            this.directions = res.items;
-            this.totalDocs = res.meta.totalDocs;
-            this.totalPages = res.meta.totalPages;
-            this.isLoadingDirs = false;
-          })
-      );
+      this.jobId = parseInt(params['id']);
+      this.getDirections();
 
-      this.subscription.add(
-        this.directionsSerivce
-          .getAllJobDirections(params['id'])
-          .subscribe((res) => {
-            this.filterService.changeData(res);
-          })
-      );
-      this.subscription.add(
-        this.filterService.currentSearch.subscribe((search) => {
-          this.searchField = search;
-        })
-      );
+      this.jobsService.getJobById(this.jobId).subscribe((res) => {
+        this.job = res.data;
+        this.isJobLoading = false;
+      });
     });
+
+    this.subscription.add(
+      this.directionsService.getDirectionFaculties().subscribe((res: any) => {
+        this.faculties = res.data;
+        const formControls = this.faculties.map(
+          (faculty) => new FormControl(true)
+        );
+        this.facultiesGroup = this.formBuilder.group({
+          selectAllFaculties: new FormControl(true),
+          faculties: new FormArray(formControls),
+        });
+      })
+    );
+
+    this.subscription.add(
+      this.searchService.search$.subscribe((res) => {
+        this.search = res;
+        this.currentPage = 1;
+        this.totalDocs = 0;
+        this.totalPages = 0;
+        this.getDirections();
+      })
+    );
   }
 
-  loadMore(): void {
+  loadMoreDirections(): void {
     this.currentPage++;
-    this.isLoadingMore = true;
+    this.isMoreDirectionsLoading = true;
     this.subscription.add(
-      this.directionsSerivce
-        .getJobDirections(this.job.id.toString(), this.currentPage, this.limit)
+      this.directionsService
+        .getJobDirections(
+          this.jobId,
+          this.currentPage,
+          this.limit,
+          this.facultiesQuery,
+          this.search
+        )
         .subscribe((res) => {
-          this.directions = [...this.directions, ...res.items];
-          this.totalDocs = res.meta.totalDocs;
-          this.totalPages = res.meta.totalPages;
-          this.isLoadingMore = false;
+          this.directions.push(...res.data);
+          if (res.meta) {
+            this.totalDocs = res.meta.total_docs ? res.meta.total_docs : 0;
+            this.totalPages = res.meta.total_pages;
+          }
+          this.isDirectionsLoading = false;
         })
     );
+  }
+
+  getDirections(): void {
+    this.isDirectionsLoading = true;
+    this.subscription.add(
+      this.directionsService
+        .getJobDirections(
+          this.jobId,
+          this.currentPage,
+          this.limit,
+          this.facultiesQuery,
+          this.search
+        )
+        .subscribe((res) => {
+          this.directions = res.data;
+          if (res.meta) {
+            this.totalDocs = res.meta.total_docs ? res.meta.total_docs : 0;
+            this.totalPages = res.meta.total_pages;
+          }
+          this.isDirectionsLoading = false;
+        })
+    );
+  }
+
+  submit() {
+    let values = this.facultiesGroup.get('faculties')?.value;
+    let buf: any[] = [];
+    for (let i = 0; i < this.faculties.length; i++) {
+      if (values[i]) {
+        buf.push(this.faculties[i]);
+      }
+    }
+    this.facultiesQuery = buf.join(',');
+    this.currentPage = 1;
+    this.totalDocs = 0;
+    this.totalPages = 0;
+
+    this.getDirections();
+  }
+
+  cancel() {
+    window.location.reload();
   }
 
   ngOnDestroy(): void {

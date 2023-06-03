@@ -1,24 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Fields } from 'src/app/constants/fields';
-import { Skills } from 'src/app/constants/skills';
-import { IFilter } from 'src/app/models/filter';
 import { IJob } from 'src/app/models/job';
-import { FilterService } from 'src/app/services/filter.service';
 import { JobService } from 'src/app/services/job.service';
-
-interface Option {
-  label: string;
-  value: string;
-}
+import { SearchService } from 'src/app/services/search.service';
 
 @Component({
   selector: 'app-home',
@@ -27,115 +13,109 @@ interface Option {
 })
 export class HomeComponent implements OnInit, OnDestroy {
   jobs: IJob[] = [];
-  allJobs: IJob[] = [];
 
-  fieldForm: FormGroup;
-  fields = Fields;
-  field = 'Все профессии';
+  fields: any[] = [];
+  fieldsGroup = new FormGroup({});
+  field = '';
 
+  // Meta
   currentPage = 1;
-  limit = 5;
-  totalDocs = 0;
+  limit = 6;
   totalPages = 0;
+  totalDocs = 0;
 
   subscription = new Subscription();
 
-  searchField = '';
-  filterMetadata = { count: 0 };
+  isJobsLoading = true;
+  isFieldsLoading = true;
+  isLoadingMoreJobs = false;
+  isSkillsLoading = true;
 
-  isLoading = false;
-  isLoadingMore = false;
+  skills: any[] = [];
+  skillsGroup: FormGroup;
+  selectAllSkills = true;
+  skillQuery = '';
+  skillsDropdown = false;
 
-  showDropdown = false;
-  filter = false;
-  skillForm: FormGroup;
-  skillOptions = Skills;
+  search = '';
 
   constructor(
     private jobsService: JobService,
-    private filterService: FilterService,
-    private fb: FormBuilder,
-    private router: Router
-  ) {
-    const formControls = this.skillOptions.map(
-      (control) => new FormControl(false)
-    );
-    const selectAllControl = new FormControl(false);
-
-    this.skillForm = this.fb.group({
-      skillOptions: new FormArray(formControls),
-      selectAll: selectAllControl,
-    });
-  }
-
-  getControls() {
-    return (this.skillForm.get('skillOptions') as FormArray).controls;
-  }
+    private formBuilder: FormBuilder,
+    private searchService: SearchService
+  ) {}
 
   get hasNextPage(): boolean {
     return this.currentPage < this.totalPages;
   }
 
   ngOnInit(): void {
-    this.isLoading = true;
-    // Создаем фильтр по областям
-    this.fieldForm = new FormGroup({});
-    let firstChecked = false;
-    for (let _ of this.fields) {
-      !firstChecked
-        ? this.fieldForm.addControl('field', new FormControl(_.value))
-        : this.fieldForm.addControl('field', new FormControl());
-      firstChecked = true;
-    }
-
-    // Создаем чекбоксы
-    this.onChanges();
+    this.getJobs();
 
     this.subscription.add(
-      this.jobsService
-        .getJobs(this.field, this.currentPage, this.limit)
-        .subscribe((res) => {
-          this.jobs = res.items;
-          this.totalDocs = res.meta.totalDocs;
-          this.totalPages = res.meta.totalPages;
-          this.isLoading = false;
-        })
-    );
-
-    this.subscription.add(
-      this.jobsService.getAllJobs().subscribe((res) => {
-        this.filterService.changeData(res);
-        this.allJobs = res;
+      this.jobsService.getJobFields().subscribe((res: any) => {
+        this.fields = [...['Все профессии'], ...res.data];
+        console.log(res.data);
+        this.fieldsGroup.addControl('field', new FormControl('Все профессии'));
+        for (let field of this.fields) {
+          this.fieldsGroup.addControl('field', new FormControl(field));
+        }
+        this.isFieldsLoading = false;
       })
     );
 
     this.subscription.add(
-      this.fieldForm.valueChanges.subscribe((changes) => {
-        this.isLoading = true;
+      this.fieldsGroup.valueChanges.subscribe((changes: any) => {
+        this.isFieldsLoading = true;
         this.field = changes.field;
         this.currentPage = 1;
-        this.jobsService
-          .getJobs(this.field, this.currentPage, this.limit)
-          .subscribe((res) => {
-            this.jobs = res.items;
-            this.totalDocs = res.meta.totalDocs;
-            this.totalPages = res.meta.totalPages;
-            this.isLoading = false;
-          });
+        this.totalDocs = 0;
+        this.totalPages = 0;
+        this.getJobs();
       })
     );
 
     this.subscription.add(
-      this.filterService.currentSearch.subscribe((search) => {
-        this.searchField = search;
-        this.fieldForm.get('field')?.setValue('Все профессии');
+      this.jobsService.getJobSkills().subscribe((res: any) => {
+        this.skills = res.data;
+        const formControls = this.skills.map((skill) => new FormControl(true));
+        this.skillsGroup = this.formBuilder.group({
+          selectAllSkills: new FormControl(true),
+          skills: new FormArray(formControls),
+        });
       })
     );
 
     this.subscription.add(
-      this.filterService.currentData.subscribe((res) => {
-        this.jobs = res;
+      this.searchService.search$.subscribe((res) => {
+        this.search = res;
+        this.currentPage = 1;
+        this.totalDocs = 0;
+        this.totalPages = 0;
+        this.getJobs();
       })
+    );
+  }
+
+  getJobs(): void {
+    this.isJobsLoading = true;
+    this.subscription.add(
+      this.jobsService
+        .getJobs(
+          this.currentPage,
+          this.limit,
+          this.field,
+          this.skillQuery,
+          this.search
+        )
+        .subscribe((res) => {
+          this.jobs = res.data;
+          if (res.meta) {
+            this.totalDocs = res.meta.total_docs;
+            this.totalPages = res.meta.total_pages;
+          }
+          this.isJobsLoading = false;
+        })
     );
   }
 
@@ -143,64 +123,45 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  loadMore(): void {
+  loadMoreJobs(): void {
     this.currentPage++;
-    this.isLoadingMore = true;
+    this.isLoadingMoreJobs = true;
     this.subscription.add(
       this.jobsService
-        .getJobs(this.field, this.currentPage, this.limit)
+        .getJobs(
+          this.currentPage,
+          this.limit,
+          this.field,
+          this.skillQuery,
+          this.search
+        )
         .subscribe((res) => {
-          this.jobs = [...this.jobs, ...res.items];
-          this.totalDocs = res.meta.totalDocs;
-          this.totalPages = res.meta.totalPages;
-          this.isLoadingMore = false;
+          this.jobs.push(...res.data);
+          if (res.meta) {
+            this.totalDocs = res.meta.total_docs;
+            this.totalPages = res.meta.total_pages;
+          }
+          this.isLoadingMoreJobs = false;
         })
     );
   }
 
-  onChanges(): void {
-    // Subscribe to changes on the selectAll checkbox
-    this.skillForm.get('selectAll')?.valueChanges.subscribe((bool) => {
-      this.skillForm
-        .get('skillOptions')
-        ?.patchValue(Array(this.skillOptions.length).fill(bool), {
-          emitEvent: false,
-        });
-    });
-
-    // Subscribe to changes on the music preference checkboxes
-    this.skillForm.get('musicPreferences')?.valueChanges.subscribe((val) => {
-      const allSelected = val.every((bool: any) => bool);
-      if (this.skillForm.get('selectAll')?.value !== allSelected) {
-        this.skillForm
-          .get('selectAll')
-          ?.patchValue(allSelected, { emitEvent: false });
-      }
-    });
-  }
-
   submit() {
-    this.filter = true;
-    const selectedPreferences = this.skillForm.value.skillOptions
-      .map((checked: any, index: any) =>
-        checked ? this.skillOptions[index].id : null
-      )
-      .filter((value: any) => value !== null);
-    let filteredSkills = this.skillOptions.filter((skill) =>
-      selectedPreferences.includes(skill.id)
-    );
-
-    let newJobs: IJob[] = [];
-    this.allJobs.forEach((job: IJob) => {
-      if (filteredSkills.every((elem) => job.skills.includes(elem.name))) {
-        newJobs.push(job);
+    const values = this.skillsGroup.get('skills')?.value;
+    let buf: any[] = [];
+    for (let i = 0; i < this.skills.length; i++) {
+      if (values[i]) {
+        buf.push(this.skills[i]);
       }
-    });
-    this.jobs = newJobs;
+    }
+    this.skillQuery = buf.join(',');
+    this.currentPage = 1;
+    this.totalDocs = 0;
+    this.totalPages = 0;
+    this.getJobs();
   }
 
   cancel() {
-    this.filter = false;
     window.location.reload();
   }
 }
